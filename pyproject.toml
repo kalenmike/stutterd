@@ -1,0 +1,25 @@
+[project]
+name = "stutterd"
+version = "0.1.0"
+description = "STT to HID"
+readme = "README.md"
+requires-python = ">=3.12"
+dependencies = [
+    "faster-whisper>=1.2.1",
+    "numpy>=2.4.2",
+    "pillow>=12.1.1",
+    "pynput>=1.8.1",
+    "pyperclip>=1.11.0",
+    "pystray>=0.19.5",
+    "sounddevice>=0.5.5",
+]
+
+[tool.uv]
+package = true
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[project.scripts]
+stutterd = "stutterd.main:main"
+settings = "stutterd.classes.gui:main"
