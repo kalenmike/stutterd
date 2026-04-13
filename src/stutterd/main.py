@@ -12,7 +12,9 @@ import inspect
 import threading
 from pynput import keyboard
 
-STT_MODEL_PATH = "~/.cache/huggingface/hub/models--Systran--faster-whisper-base/snapshots/ebe41f70d5b6dfa9166e2c581c45c9c0cfc57b66"
+STT_MODEL_PATH = os.path.expanduser(
+    "~/.cache/huggingface/hub/models--Systran--faster-whisper-base/snapshots/ebe41f70d5b6dfa9166e2c581c45c9c0cfc57b66"
+)
 MIC_THRESHOLD = 0.001
 
 
