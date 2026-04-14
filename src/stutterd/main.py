@@ -8,6 +8,7 @@ import time
 import sys
 import os
 import inspect
+import tempfile
 
 import threading
 from pynput import keyboard
@@ -16,6 +17,8 @@ STT_MODEL_PATH = os.path.expanduser(
     "~/.cache/huggingface/hub/models--Systran--faster-whisper-base/snapshots/ebe41f70d5b6dfa9166e2c581c45c9c0cfc57b66"
 )
 MIC_THRESHOLD = 0.001
+
+STATUS_FILE = os.path.join(tempfile.gettempdir(), "stutterd_status")
 
 
 class AppState:
@@ -41,6 +44,23 @@ class AppState:
         self.hotkeys.start()
 
         self.print_welcome()
+        self.update_shared_status()
+
+    def update_shared_status(self):
+        """Writes the current state to a temp file for Polybar to read."""
+        try:
+            with open(STATUS_FILE, "w") as f:
+                if not self.is_active:
+                    # Muted icon (Requires a font like FontAwesome or Nerd Fonts)
+                    f.write("OFF")
+                else:
+                    # Display language code (EN/ES)
+                    lang_code = (
+                        "EN" if self.language == WhisperLanguage.ENGLISH else "ES"
+                    )
+                    f.write(f"{lang_code}")
+        except Exception:
+            pass
 
     def print_welcome(self):
         # ANSI Color codes for a bit of flair
@@ -99,6 +119,7 @@ class AppState:
 
         ears.set_language(self.language)
         self.print_welcome()
+        self.update_shared_status()
 
     def stop_listening(self):
         self.abort_listening.set()
@@ -109,10 +130,12 @@ class AppState:
     def _disable(self):
         self.is_active = False
         self.stop_listening()
+        self.update_shared_status()
 
     def _enable(self):
         self.allow_listening()
         self.is_active = True
+        self.update_shared_status()
 
     def toggle_mic(self):
         with self.lock:
