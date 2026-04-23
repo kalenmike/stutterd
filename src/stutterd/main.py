@@ -192,9 +192,6 @@ def main():
     hands = Typer()
     state = AppState(hands, ears)
 
-    # ears.set_language(WhisperLanguage.ENGLISH)
-    ears.set_language(WhisperLanguage.SPANISH)
-
     try:
         while True:
             # If state is False, we loop and sleep without touching the mic
